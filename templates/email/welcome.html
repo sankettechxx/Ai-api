@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0a0a0a; color: #e0e0e0; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: #111; padding: 30px; border-radius: 12px; border: 1px solid #222; }
+        h1 { color: #00ff88; }
+        .btn { display: inline-block; padding: 12px 30px; background: #00ff88; color: #000; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 20px; }
+        .footer { color: #666; font-size: 12px; margin-top: 30px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👻 Welcome to Ghost AI!</h1>
+        <p>Hi <strong>{{name}}</strong>,</p>
+        <p>Thanks for joining Ghost AI — the free, unlimited code generator.</p>
+        <p><strong>Your plan:</strong> {{plan}}</p>
+        <p><strong>Daily limit:</strong> {{limit}} generations</p>
+        <a href="https://ghost-ai.onrender.com" class="btn">Start Generating Code</a>
+        <div class="footer">
+            <p>Ghost AI • Free Forever • No Restrictions</p>
+            <p>If you didn't create this account, please ignore this email.</p>
+        </div>
+    </div>
+</body>
+</html>
