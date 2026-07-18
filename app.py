@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 # ============ API KEY ============
-GEMINI_KEY = "AIzaSyAd9JIitUC03XJkrfqpkUDqTUHLUh3Ak1E"
+GEMINI_KEY = "AQ.Ab8RN6IiDL4sVHxPKxKARGlzrQFLn6-FmgT7kxf_aequa1WgmA"
 
 # ============ STORAGE ============
 request_log = defaultdict(list)
