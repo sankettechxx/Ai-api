@@ -31,6 +31,7 @@ def generate():
         return jsonify({'error': 'API key not configured'}), 500
     
     try:
+        # Tested working models: llama3-8b-8192, llama3-70b-8192, mixtral-8x7b-32768, gemma2-9b-it
         res = requests.post(
             'https://api.groq.com/openai/v1/chat/completions',
             headers={
@@ -38,9 +39,9 @@ def generate():
                 'Content-Type': 'application/json'
             },
             json={
-                'model': 'llama-3.1-70b-versatile',
+                'model': 'gemma2-9b-it',
                 'messages': [
-                    {'role': 'system', 'content': 'You are a helpful AI assistant.'},
+                    {'role': 'system', 'content': 'You are a helpful, intelligent AI assistant. Answer naturally and completely.'},
                     {'role': 'user', 'content': prompt}
                 ],
                 'temperature': 0.8,
@@ -49,11 +50,8 @@ def generate():
             timeout=60
         )
         
-        if res.status_code == 401:
-            return jsonify({'error': 'Invalid API Key. Check GROQ_KEY in environment.'}), 401
-        
         if res.status_code != 200:
-            return jsonify({'error': f'Groq Error {res.status_code}'}), 500
+            return jsonify({'error': f'Groq Error {res.status_code}: {res.text[:300]}'}), 500
         
         response = res.json()['choices'][0]['message']['content']
         return jsonify({'success': True, 'response': response, 'model': 'groq'})
