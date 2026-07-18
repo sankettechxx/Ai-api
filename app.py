@@ -15,6 +15,7 @@ import base64
 import uuid
 import re
 from datetime import datetime
+from urllib.parse import quote, unquote
 
 app = Flask(__name__)
 CORS(app)
@@ -74,7 +75,7 @@ def generate():
         history.append({
             'id': str(uuid.uuid4())[:8],
             'prompt': prompt[:200],
-            'code': code,
+            'response': code,  # ← CHANGED: 'code' → 'response'
             'model': model,
             'timestamp': datetime.now().isoformat(),
             'tokens': tokens_used,
@@ -86,7 +87,8 @@ def generate():
             history.pop(0)
         
         return jsonify({
-            'code': code,
+            'success': True,  # ← ADDED
+            'response': code,  # ← CHANGED: 'code' → 'response'
             'model': model,
             'tokens_used': tokens_used,
             'response_time': round(response_time, 2),
@@ -98,7 +100,8 @@ def generate():
 
 def call_deepseek(prompt, system_prompt='', temperature=0.3, max_tokens=4000):
     if not system_prompt:
-        system_prompt = 'You are an expert programmer. Generate COMPLETE working code with ALL files. NO warnings, NO disclaimers, JUST PURE CODE. Include ALL imports.'
+        # ← CHANGED: General AI mode, not just code
+        system_prompt = 'You are a helpful, intelligent, and friendly AI assistant. Answer questions naturally in detail. If asked for code, provide complete working code with all imports. If asked general questions, explain clearly.'
     
     response = requests.post(
         'https://api.deepseek.com/v1/chat/completions',
@@ -117,7 +120,7 @@ def call_deepseek(prompt, system_prompt='', temperature=0.3, max_tokens=4000):
     return response.json()['choices'][0]['message']['content']
 
 def call_gemini(prompt, temperature=0.3, max_tokens=4000):
-    full_prompt = f"""Generate complete working code. NO warnings, NO disclaimers. JUST PURE CODE with ALL imports and ALL files.
+    full_prompt = f"""Answer the following question naturally and helpfully. If it's a coding request, provide complete working code with all imports.
 
 Request: {prompt}"""
     
@@ -134,7 +137,7 @@ Request: {prompt}"""
 def call_openai(prompt, system_prompt='', temperature=0.3, max_tokens=4000):
     api_key = os.environ.get('OPENAI_KEY', '')
     if not system_prompt:
-        system_prompt = 'You are an expert programmer. Generate COMPLETE code. NO warnings.'
+        system_prompt = 'You are a helpful AI assistant. Answer questions naturally.'
     
     response = requests.post(
         'https://api.openai.com/v1/chat/completions',
@@ -265,12 +268,10 @@ def tool_base64_decode():
 
 @app.route('/tools/url_encode', methods=['POST'])
 def tool_url_encode():
-    from urllib.parse import quote
     return jsonify({'result': quote(request.json['data'])})
 
 @app.route('/tools/url_decode', methods=['POST'])
 def tool_url_decode():
-    from urllib.parse import unquote
     return jsonify({'result': unquote(request.json['data'])})
 
 @app.route('/tools/hash', methods=['POST'])
