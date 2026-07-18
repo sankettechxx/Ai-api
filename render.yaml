@@ -1,11 +1,6 @@
 services:
   - type: web
-    name: ghost-ai-api
+    name: ai-api-1
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn server:app
-    envVars:
-      - key: DEEPSEEK_KEY
-        value: your-key-here
-      - key: OPENAI_KEY
-        value: your-key-here
+    startCommand: gunicorn app:app
